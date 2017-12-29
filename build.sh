@@ -6,5 +6,4 @@ DATE_TAG=`date "+%Y%m%d"`
 docker build \
   -t android-build-environment:latest \
   -t android-build-environment:$DATE_TAG \
-  "$SRC_DIR" \
-&& echo "Successfully built android-build-environment:$DATE_TAG"
+  "$SRC_DIR"
