@@ -2,11 +2,11 @@
 
 SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
-DATE_TAG="$2"
-if [ -z "$DATE_TAG" ]; then
-  DATE_TAG=`date "+%Y%m%d"`
+TAG="$2"
+if [ -z "$TAG" ]; then
+  TAG="latest"
 fi
 
 docker build \
-  -t android-build-environment:$DATE_TAG \
+  -t android-build-environment:$TAG \
   "$SRC_DIR"
