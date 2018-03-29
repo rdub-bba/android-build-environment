@@ -65,7 +65,6 @@ cmake;3.6.4111459
 extras;android;gapid;1
 extras;android;gapid;3
 extras;android;m2repository
-extras;android;support
 extras;google;admob_ads_sdk
 extras;google;analytics_sdk_v2
 extras;google;auto
@@ -76,9 +75,6 @@ extras;google;instantapps
 extras;google;m2repository
 extras;google;market_apk_expansion
 extras;google;market_licensing
-extras;google;play_apk_expansion
-extras;google;play_billing
-extras;google;play_licensing
 extras;google;simulators
 extras;google;webdriver
 extras;m2repository;com;android;support;constraint;constraint-layout-solver;1.0.0
@@ -114,8 +110,6 @@ extras;m2repository;com;android;support;constraint;constraint-layout;1.0.0-beta5
 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1
 extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2
 ndk-bundle
-patcher;v1
-patcher;v4
 platform-tools
 platforms;android-10
 platforms;android-11
