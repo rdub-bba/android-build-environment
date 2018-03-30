@@ -5,6 +5,28 @@ LABEL maintainer="devops@brainbeanapps.com"
 WORKDIR /opt
 COPY . .
 
+# Install OpenJDK
+# Ref: https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends openjdk-8-jdk \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/* \
+  && rm -rf /var/cache/oracle-jdk8-installer;
+
+# Setup JAVA_HOME
+ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
+
+# Install Android Source dependencies
+RUN apt-get update \
+  && apt-get install -y --no-install-recommends git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install repo tool
+RUN mkdir -p /opt/bin \
+  && wget https://storage.googleapis.com/git-repo-downloads/repo -O /opt/bin/repo -q \
+  && chmod +x /opt/bin/repo
+
 # Install Android SDK
 ENV ANDROID_HOME /opt/android-sdk
 ENV ANDROID_SDK="${ANDROID_HOME}"
