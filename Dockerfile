@@ -5,12 +5,15 @@ LABEL maintainer="devops@brainbeanapps.com"
 WORKDIR /opt
 COPY . .
 
+# Use bash instead of sh (see https://github.com/eromoe/docker/commit/7dccc72bb24c715f176e4980ab59fd7aeb149a5f)
+RUN rm /bin/sh && ln -s /bin/bash /bin/sh
+
 # There's no terminal attached
 ARG DEBIAN_FRONTEND=noninteractive
 
 # Base tools: apt-utils, wget, zip, build-essential
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends apt-utils wget zip build-essential ca-certificates \
+  && apt-get install -y --no-install-recommends apt-utils wget curl zip build-essential ca-certificates apt-transport-https \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
