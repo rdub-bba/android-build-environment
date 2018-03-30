@@ -11,7 +11,7 @@ RUN rm /bin/sh && ln -s /bin/bash /bin/sh
 # There's no terminal attached
 ARG DEBIAN_FRONTEND=noninteractive
 
-# Base tools: apt-utils, wget, zip, build-essential
+# Base tools
 RUN apt-get update \
   && apt-get install -y --no-install-recommends apt-utils wget curl zip build-essential ca-certificates apt-transport-https \
   && apt-get clean \
