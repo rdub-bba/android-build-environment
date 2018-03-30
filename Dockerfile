@@ -10,7 +10,7 @@ ARG DEBIAN_FRONTEND=noninteractive
 
 # Base tools: apt-utils, wget, zip, build-essential
 RUN apt-get update \
-  && apt-get install -y --no-install-recommends apt-utils wget zip build-essential \
+  && apt-get install -y --no-install-recommends apt-utils wget zip build-essential ca-certificates \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
