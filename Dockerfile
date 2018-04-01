@@ -2,6 +2,10 @@ FROM brainbeanapps/base-build-environment:latest
 
 LABEL maintainer="devops@brainbeanapps.com"
 
+# Switch to root
+USER root
+
+# Copy assets
 WORKDIR /opt
 COPY . .
 
@@ -22,21 +26,16 @@ RUN apt-get update \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
-# Install repo tool
-RUN mkdir -p /opt/bin \
-  && wget https://storage.googleapis.com/git-repo-downloads/repo -O /opt/bin/repo -q \
-  && chmod +x /opt/bin/repo
-
 # Install Android SDK
 ENV ANDROID_HOME /opt/android-sdk
 ENV ANDROID_SDK="${ANDROID_HOME}"
-ENV ANDROID_SDK_HOME="${ANDROID_HOME}"
+# ANDROID_SDK_HOME should not be set in order to use user home directory
+ENV ANDROID_SDK_ROOT="${ANDROID_HOME}"
 ENV ANDROID_NDK="${ANDROID_HOME}/ndk-bundle"
+ENV ANDROID_NDK_ROOT="${ANDROID_NDK}"
 ENV ANDROID_NDK_HOME="${ANDROID_NDK}"
 ENV PATH="${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK}:${PATH}"
 RUN mkdir -p "${ANDROID_HOME}" \
-  && mkdir -p "${ANDROID_HOME}/.android" \
-  && touch "${ANDROID_HOME}/.android/repositories.cfg" \
   && wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip -O /opt/sdk-tools-linux.zip \
   && unzip /opt/sdk-tools-linux.zip -d "${ANDROID_HOME}" \
   && rm /opt/sdk-tools-linux.zip \
@@ -58,3 +57,7 @@ RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && apt-get install -y --no-install-recommends yarn \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
+
+# Switch to user
+USER user
+WORKDIR /home/user
