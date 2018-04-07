@@ -1,4 +1,4 @@
-FROM brainbeanapps/base-build-environment:latest
+FROM brainbeanapps/base-linux-build-environment:latest
 
 LABEL maintainer="devops@brainbeanapps.com"
 
