@@ -36,10 +36,10 @@ ENV ANDROID_NDK_ROOT="${ANDROID_NDK}"
 ENV ANDROID_NDK_HOME="${ANDROID_NDK}"
 ENV PATH="${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK}:${PATH}"
 RUN mkdir -p "${ANDROID_HOME}" \
-  && wget https://dl.google.com/android/repository/sdk-tools-linux-3859397.zip -O /opt/sdk-tools-linux.zip \
-  && unzip /opt/sdk-tools-linux.zip -d "${ANDROID_HOME}" \
+  && wget -q -O /opt/sdk-tools-linux.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
+  && unzip -q /opt/sdk-tools-linux.zip -d "${ANDROID_HOME}" \
   && rm /opt/sdk-tools-linux.zip \
-  && yes | "${ANDROID_HOME}/tools/bin/sdkmanager" --licenses \
+  && yes | "${ANDROID_HOME}/tools/bin/sdkmanager" --licenses > /dev/null \
   && "${ANDROID_HOME}/tools/bin/sdkmanager" --update --include_obsolete \
   && (while read -r PACKAGE; do (echo "Installing ${PACKAGE}"; yes | "${ANDROID_HOME}/tools/bin/sdkmanager" "$PACKAGE" > /dev/null) && continue; break; done < /opt/sdk-packages.list)
 
