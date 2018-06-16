@@ -41,7 +41,7 @@ RUN mkdir -p "${ANDROID_HOME}" \
   && rm /opt/sdk-tools-linux.zip \
   && yes | "${ANDROID_HOME}/tools/bin/sdkmanager" --licenses \
   && "${ANDROID_HOME}/tools/bin/sdkmanager" --update --include_obsolete \
-  && (while read -r PACKAGE; do (echo "Installing ${PACKAGE}"; yes | "${ANDROID_HOME}/tools/bin/sdkmanager" "$PACKAGE") && continue; break; done < /opt/sdk-packages.list)
+  && (while read -r PACKAGE; do (echo "Installing ${PACKAGE}"; yes | "${ANDROID_HOME}/tools/bin/sdkmanager" "$PACKAGE" > /dev/null) && continue; break; done < /opt/sdk-packages.list)
 
 # Install Node.js & npm
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
