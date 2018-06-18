@@ -1,3 +1,6 @@
+## Project-specific
+sdk-packages.cache
+
 ## Origin: https://github.com/github/gitignore/blob/master/Global/Windows.gitignore
 # Windows thumbnail cache files
 Thumbs.db
