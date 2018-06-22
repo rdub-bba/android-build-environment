@@ -20,7 +20,7 @@ if [ ! -f "$SRC_DIR/sdk-packages.cache" ]; then
     > "$SRC_DIR/sdk-packages.cache"
 fi
 
-ANDROID_API=26
+ANDROID_API=27
 
 ( \
   cat "$SRC_DIR/sdk-packages.cache" \
