@@ -3,7 +3,7 @@
 SRC_DIR="$( cd "$( dirname "${BASH_SOURCE[0]}" )" && pwd )"
 
 if [ ! -f "$SRC_DIR/sdk-packages.cache" ]; then
-  $ANDROID_SDK/tools/bin/sdkmanager --list \
+  sdkmanager --list \
     | awk '{print $1;}' \
     | grep -vE '\<system-images\>' \
     | grep -vE '\<sources\>' \
