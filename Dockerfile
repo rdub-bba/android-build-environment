@@ -1,47 +1,67 @@
 FROM brainbeanapps/base-linux-build-environment:latest
-
 LABEL maintainer="devops@brainbeanapps.com"
 
-# Switch to root
+ENV ANDROID_HOME /opt/android-sdk
+
+# Switching to root user
 USER root
 
-# Copy assets
-WORKDIR /opt
-COPY sdk-packages.list .
+# Updating the system
+RUN apt-get update -qq
 
-# Install OpenJDK
-# Ref: https://www.digitalocean.com/community/tutorials/how-to-install-java-with-apt-get-on-ubuntu-16-04
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends openjdk-8-jdk \
-  && apt-get clean \
-  && rm -rf /var/lib/apt/lists/* \
-  && rm -rf /var/cache/oracle-jdk8-installer;
-
-# Setup JAVA_HOME
+# Installing OpenJDK and x86 dependencies
+RUN dpkg --add-architecture i386
+RUN apt-get update -qq
+RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk libc6:i386 libstdc++6:i386 libgcc1:i386 libncurses5:i386 libz1:i386 \
+    && rm -rf /var/cache/oracle-jdk8-installer \
+    && apt-get clean \
+    && rm -rf /var/lib/apt/lists/*
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
 # Install Android Source dependencies
-RUN apt-get update \
-  && apt-get install -y --no-install-recommends git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip \
+RUN apt-get install -y --no-install-recommends git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
 # Install Android SDK
-ENV ANDROID_HOME /opt/android-sdk
-ENV ANDROID_SDK="${ANDROID_HOME}"
-# ANDROID_SDK_HOME should not be set in order to use user home directory
-ENV ANDROID_SDK_ROOT="${ANDROID_HOME}"
-ENV ANDROID_NDK="${ANDROID_HOME}/ndk-bundle"
-ENV ANDROID_NDK_ROOT="${ANDROID_NDK}"
-ENV ANDROID_NDK_HOME="${ANDROID_NDK}"
-ENV PATH="${ANDROID_HOME}/tools:${ANDROID_HOME}/platform-tools:${ANDROID_NDK}:${PATH}"
-RUN mkdir -p "${ANDROID_HOME}" \
-  && wget -q -O /opt/sdk-tools-linux.zip https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip \
-  && unzip -q /opt/sdk-tools-linux.zip -d "${ANDROID_HOME}" \
-  && rm /opt/sdk-tools-linux.zip \
-  && yes | "${ANDROID_HOME}/tools/bin/sdkmanager" --licenses > /dev/null \
-  && "${ANDROID_HOME}/tools/bin/sdkmanager" --update > /dev/null \
-  && (while read -r PACKAGE; do (echo "Installing ${PACKAGE}"; yes | "${ANDROID_HOME}/tools/bin/sdkmanager" "$PACKAGE" > /dev/null) && continue; exit 1; done < /opt/sdk-packages.list)
+WORKDIR /opt
+RUN wget -q https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip -O android-sdk-tools.zip \
+    && unzip -q android-sdk-tools.zip -d ${ANDROID_HOME} \
+    && rm android-sdk-tools.zip
+ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
+
+# Accepting license
+RUN yes | sdkmanager --licenses
+
+# Installing platform tools
+RUN sdkmanager "emulator" "tools" "platform-tools"
+
+# Installing SDKs and other components
+# Accepting all non-standard licenses
+RUN yes | sdkmanager \
+    "cmake;3.10.2.4988404" \
+    "cmake;3.6.4111459" \
+    "platforms;android-29" \
+    "build-tools;29.0.1" \
+    "build-tools;29.0.0" \
+    "system-images;android-29;google_apis;x86" \
+    "system-images;android-28;google_apis;x86" \
+    "system-images;android-26;google_apis;x86" \
+    "system-images;android-25;google_apis;armeabi-v7a" \
+    "system-images;android-24;default;armeabi-v7a" \
+    "system-images;android-22;default;armeabi-v7a" \
+    "system-images;android-19;default;armeabi-v7a" \
+    "extras;android;m2repository" \
+    "extras;google;m2repository" \
+    "extras;google;google_play_services" \
+    "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" \
+    "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" \
+    "add-ons;addon-google_apis-google-23" \
+    "add-ons;addon-google_apis-google-22" \
+    "add-ons;addon-google_apis-google-21" \
+    "patcher;v4" \
+    "ndk-bundle" \
+    "ndk;20.0.5594570" \
 
 # Install Node.js & npm
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
