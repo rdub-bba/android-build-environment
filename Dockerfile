@@ -40,25 +40,14 @@ RUN sdkmanager "emulator" "tools" "platform-tools"
 # Accepting all non-standard licenses
 RUN yes | sdkmanager \
     "cmake;3.10.2.4988404" \
-    "cmake;3.6.4111459" \
     "platforms;android-29" \
     "build-tools;29.0.1" \
     "build-tools;29.0.0" \
-    "system-images;android-29;google_apis;x86" \
-    "system-images;android-28;google_apis;x86" \
-    "system-images;android-26;google_apis;x86" \
-    "system-images;android-25;google_apis;armeabi-v7a" \
-    "system-images;android-24;default;armeabi-v7a" \
-    "system-images;android-22;default;armeabi-v7a" \
-    "system-images;android-19;default;armeabi-v7a" \
     "extras;android;m2repository" \
     "extras;google;m2repository" \
     "extras;google;google_play_services" \
     "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.2" \
     "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" \
-    "add-ons;addon-google_apis-google-23" \
-    "add-ons;addon-google_apis-google-22" \
-    "add-ons;addon-google_apis-google-21" \
     "patcher;v4" \
     "ndk-bundle" \
     "ndk;20.0.5594570" \
