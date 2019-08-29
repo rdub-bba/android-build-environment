@@ -2,24 +2,21 @@ FROM brainbeanapps/base-linux-build-environment:latest
 LABEL maintainer="devops@brainbeanapps.com"
 
 ENV ANDROID_HOME /opt/android-sdk
+ENV DEBIAN_FRONTEND noninteractive
 
 # Switching to root user
 USER root
 
-# Updating the system
-RUN apt-get update -qq
-
-# Installing OpenJDK and x86 dependencies
-RUN dpkg --add-architecture i386
-RUN apt-get update -qq
-RUN DEBIAN_FRONTEND=noninteractive apt-get install -y openjdk-8-jdk libc6:i386 libstdc++6:i386 libgcc1:i386 libncurses5:i386 libz1:i386 \
+# Installing OpenJDK
+RUN apt-get update \
+    && apt-get install --no-install-recommends -y openjdk-8-jdk \
     && rm -rf /var/cache/oracle-jdk8-installer \
     && apt-get clean \
     && rm -rf /var/lib/apt/lists/*
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
 # Install Android Source dependencies
-RUN apt-get install -y --no-install-recommends git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip \
+RUN apt-get install --no-install-recommends -y git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -34,7 +31,7 @@ ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}
 RUN yes | sdkmanager --licenses
 
 # Installing platform tools
-RUN sdkmanager "emulator" "tools" "platform-tools"
+RUN sdkmanager "tools" "platform-tools"
 
 # Installing SDKs and other components
 # Accepting all non-standard licenses
@@ -55,7 +52,7 @@ RUN yes | sdkmanager \
 # Install Node.js & npm
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
   && apt-get update \
-  && apt-get install -y --no-install-recommends nodejs \
+  && apt-get install --no-install-recommends -y nodejs \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/* \
   && npm install -g npm@latest
@@ -64,7 +61,7 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update \
-  && apt-get install -y --no-install-recommends yarn \
+  && apt-get install --no-install-recommends -y yarn \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
