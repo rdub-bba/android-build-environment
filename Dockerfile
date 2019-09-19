@@ -24,7 +24,8 @@ RUN apt-get update \
 
 # Install Android SDK
 WORKDIR /opt
-RUN wget -q https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip -O android-sdk-tools.zip \
+RUN mkdir -p /root/.android/ && touch /root/.android/repositories.cfg \
+    && wget -q https://dl.google.com/android/repository/sdk-tools-linux-4333796.zip -O android-sdk-tools.zip \
     && unzip -q android-sdk-tools.zip -d ${ANDROID_HOME} \
     && rm android-sdk-tools.zip
 ENV PATH ${PATH}:${ANDROID_HOME}/tools:${ANDROID_HOME}/tools/bin:${ANDROID_HOME}/platform-tools
