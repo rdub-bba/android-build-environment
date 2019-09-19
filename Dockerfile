@@ -1,4 +1,5 @@
 FROM brainbeanapps/base-linux-build-environment:latest
+
 LABEL maintainer="devops@brainbeanapps.com"
 
 ENV ANDROID_HOME /opt/android-sdk
@@ -16,7 +17,8 @@ RUN apt-get update \
 ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
 # Install Android Source dependencies
-RUN apt-get install --no-install-recommends -y git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip \
+RUN apt-get update \
+  && apt-get install --no-install-recommends -y git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -47,7 +49,7 @@ RUN yes | sdkmanager \
     "extras;m2repository;com;android;support;constraint;constraint-layout;1.0.1" \
     "patcher;v4" \
     "ndk-bundle" \
-    "ndk;20.0.5594570" \
+    "ndk;20.0.5594570"
 
 # Install Node.js & npm
 RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
@@ -61,7 +63,13 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update \
-  && apt-get install --no-install-recommends -y yarn \
+  && apt-get install --no-install-recommends -y yarn
+
+# Installing fastlane
+RUN apt-get install -y \
+  ruby \
+  ruby-dev \
+  && gem install fastlane \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
