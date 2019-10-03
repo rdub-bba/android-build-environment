@@ -3,7 +3,7 @@ FROM brainbeanapps/base-linux-build-environment:latest
 LABEL maintainer="devops@brainbeanapps.com"
 
 ENV ANDROID_HOME /opt/android-sdk
-ENV DEBIAN_FRONTEND noninteractive
+ARG DEBIAN_FRONTEND=noninteractive
 
 # Switching to root user
 USER root
@@ -18,7 +18,7 @@ ENV JAVA_HOME /usr/lib/jvm/java-8-openjdk-amd64/
 
 # Install Android Source dependencies
 RUN apt-get update \
-  && apt-get install --no-install-recommends -y git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip \
+  && apt-get install --no-install-recommends -y git-core gnupg flex bison gperf build-essential zip curl zlib1g-dev gcc-multilib g++-multilib libc6-dev-i386 lib32ncurses5-dev x11proto-core-dev libx11-dev lib32z-dev ccache libgl1-mesa-dev libxml2-utils xsltproc unzip \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
@@ -60,11 +60,17 @@ RUN curl -sL https://deb.nodesource.com/setup_8.x | bash - \
   && rm -rf /var/lib/apt/lists/* \
   && npm install -g npm@latest
 
-# Install Yarn & Ruby
+# Install Yarn
 RUN curl -sS https://dl.yarnpkg.com/debian/pubkey.gpg | apt-key add - \
   && echo "deb https://dl.yarnpkg.com/debian/ stable main" | tee /etc/apt/sources.list.d/yarn.list \
   && apt-get update \
-  && apt-get install --no-install-recommends -y yarn ruby ruby-dev \
+  && apt-get install --no-install-recommends -y yarn \
+  && apt-get clean \
+  && rm -rf /var/lib/apt/lists/*
+
+# Install Ruby
+RUN apt-get update \
+  && apt-get install --no-install-recommends -y ruby ruby-dev \
   && apt-get clean \
   && rm -rf /var/lib/apt/lists/*
 
